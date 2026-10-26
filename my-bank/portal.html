@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>First Federal Trust Bank – Online Banking</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background: #e9ecef; min-height: 100vh; padding-bottom: 80px; }
+        
+        .top-bar { background: #0a1628; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #c9a84c; position: sticky; top: 0; z-index: 100; }
+        .top-bar .left { display: flex; align-items: center; gap: 10px; }
+        .top-bar .left .logo { width: 36px; height: 36px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #0a1628; border: 2px solid #c9a84c; }
+        .top-bar .left .bank-name { color: #fff; font-size: 13px; font-weight: 600; }
+        .top-bar .left .bank-name small { display: none; }
+        .top-bar .right { display: flex; align-items: center; gap: 12px; color: #adb5bd; font-size: 12px; }
+        .top-bar .right .secure { display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.06); padding: 4px 10px; border-radius: 16px; font-size: 10px; color: #8ce99a; }
+        .top-bar .right .user { display: none; }
+        .top-bar .right a { color: #adb5bd; text-decoration: none; font-size: 12px; }
+        
+        .content { padding: 12px 12px 20px; max-width: 600px; margin: 0 auto; }
+        .breadcrumb { font-size: 12px; color: #6c757d; margin-bottom: 8px; }
+        .breadcrumb span { color: #1a1a2e; font-weight: 500; }
+        .page-title { font-size: 20px; font-weight: 700; color: #1a1a2e; margin-bottom: 2px; }
+        .page-sub { font-size: 13px; color: #6c757d; margin-bottom: 14px; }
+        
+        .card { background: #fff; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); padding: 18px 20px; margin-bottom: 14px; }
+        .card .label { font-size: 11px; color: #6c757d; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; margin-bottom: 3px; }
+        .card .big { font-size: 28px; font-weight: 800; color: #1b3a2d; letter-spacing: -0.5px; }
+        .card .big span { font-size: 14px; font-weight: 500; color: #2d5a3f; }
+        .card .sub { font-size: 12px; color: #6c757d; margin-top: 4px; }
+        
+        .detail-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #f1f3f5; font-size: 13px; }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-row .lbl { color: #6c757d; }
+        .detail-row .val { font-weight: 600; color: #1a1a2e; }
+        
+        .alert { background: #fff3cd; border: 1px solid #ffc107; border-left: 5px solid #e0a800; border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; display: flex; align-items: flex-start; gap: 10px; }
+        .alert .icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+        .alert .text { font-size: 12px; color: #856404; line-height: 1.4; }
+        .alert .text strong { font-weight: 700; }
+        .alert .text .cd { font-weight: 700; color: #1b3a2d; margin-top: 3px; font-size: 14px; }
+        
+        .lock-card { background: #fff; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); padding: 16px 18px; margin-bottom: 14px; }
+        .lock-card .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .lock-card .top .status { display: flex; align-items: center; gap: 8px; }
+        .lock-card .top .status .dot { width: 10px; height: 10px; border-radius: 50%; background: #ffc107; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        .lock-card .top .status .lbl { font-size: 14px; font-weight: 700; color: #856404; }
+        .lock-card .top .badge { background: #fff3cd; padding: 3px 12px; border-radius: 16px; font-size: 11px; font-weight: 600; color: #856404; }
+        .lock-card .bar { height: 6px; background: #e9ecef; border-radius: 8px; margin: 6px 0 8px; overflow: hidden; }
+        .lock-card .bar .fill { height: 100%; width: 15%; background: linear-gradient(90deg, #ffc107, #fd7e14); border-radius: 8px; }
+        .lock-card .dates { display: flex; justify-content: space-between; font-size: 11px; color: #6c757d; margin-bottom: 4px; }
+        .lock-card .dates strong { color: #1a1a2e; }
+        .lock-card .cd-text { font-size: 16px; font-weight: 700; color: #1b3a2d; text-align: center; padding: 4px 0 0; }
+        
+        .tx-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 6px; }
+        .tx-header h2 { font-size: 16px; font-weight: 700; color: #1a1a2e; }
+        .tx-header .filters { display: flex; gap: 6px; }
+        .tx-header .filters span { padding: 4px 12px; border-radius: 16px; font-size: 11px; background: #f1f3f5; color: #6c757d; }
+        .tx-header .filters span.active { background: #1b3a2d; color: #fff; }
+        
+        .tx-list { list-style: none; }
+        .tx-item { padding: 12px 0; border-bottom: 1px solid #f1f3f5; }
+        .tx-item:last-child { border-bottom: none; }
+        .tx-item .tx-row { display: flex; justify-content: space-between; align-items: flex-start; }
+        .tx-item .tx-left { flex: 1; min-width: 0; }
+        .tx-item .tx-left .tx-desc { font-size: 13px; font-weight: 500; color: #1a1a2e; }
+        .tx-item .tx-left .tx-ref { font-size: 11px; color: #adb5bd; margin-top: 1px; }
+        .tx-item .tx-right { text-align: right; flex-shrink: 0; margin-left: 10px; }
+        .tx-item .tx-right .tx-amount { font-size: 14px; font-weight: 600; }
+        .tx-item .tx-right .tx-amount.credit { color: #28a745; }
+        .tx-item .tx-right .tx-amount.debit { color: #dc3545; }
+        .tx-item .tx-right .tx-date { font-size: 10px; color: #adb5bd; margin-top: 2px; }
+        .tx-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+        .tx-link { color: #0056b3; text-decoration: underline; cursor: not-allowed; pointer-events: none; opacity: 0.6; font-weight: 500; font-size: 13px; }
+        .tx-link.unlocked { cursor: pointer; pointer-events: auto; opacity: 1; }
+        .tx-status { font-size: 11px; padding: 3px 10px; border-radius: 12px; background: #fff3cd; color: #856404; font-weight: 500; }
+        .tx-status.completed { background: #d3f9d8; color: #2b8a3e; }
+        .tx-note { margin-top: 10px; font-size: 12px; color: #6c757d; text-align: center; }
+        
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #e9ecef; display: flex; justify-content: space-around; padding: 6px 0 env(safe-area-inset-bottom, 6px); z-index: 200; box-shadow: 0 -2px 12px rgba(0,0,0,0.08); }
+        .bottom-nav a { display: flex; flex-direction: column; align-items: center; gap: 2px; text-decoration: none; color: #868e96; font-size: 10px; padding: 4px 12px; border-radius: 8px; transition: all 0.15s; }
+        .bottom-nav a .nav-icon { font-size: 22px; }
+        .bottom-nav a.active { color: #1b3a2d; }
+        .bottom-nav a.active .nav-icon { color: #1b3a2d; }
+        .bottom-nav a:active { background: #f1f3f5; }
+        
+        .p-footer { background: #f8f9fa; border-top: 1px solid #e9ecef; padding: 12px 16px; text-align: center; font-size: 10px; color: #868e96; line-height: 1.5; margin-top: 4px; }
+        .p-footer .links { display: flex; justify-content: center; gap: 14px; margin-bottom: 4px; }
+        .p-footer .links a { color: #868e96; text-decoration: none; }
+        .p-footer .badges { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .p-footer .badges .badge { background: #e9ecef; padding: 3px 10px; border-radius: 4px; font-size: 10px; font-weight: 600; color: #495057; }
+        
+        @media (min-width: 600px) {
+            body { padding: 20px; padding-bottom: 20px; }
+            .content { padding: 16px 20px; max-width: 800px; }
+            .top-bar { padding: 12px 24px; position: static; }
+            .top-bar .left .bank-name small { display: block; font-size: 10px; }
+            .top-bar .right .user { display: inline; }
+            .bottom-nav { display: none; }
+            .card .big { font-size: 34px; }
+            .lock-card .cd-text { font-size: 18px; }
+            .tx-item { padding: 14px 0; }
+            .tx-item .tx-left .tx-desc { font-size: 14px; }
+            .tx-item .tx-right .tx-amount { font-size: 15px; }
+            .p-footer { display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; text-align: left; }
+            .p-footer .links { margin-bottom: 0; }
+        }
+        
+        @media (min-width: 900px) {
+            .content { max-width: 1000px; }
+            .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        }
+        
+        .grid-2 { display: block; }
+        @media (min-width: 600px) {
+            .grid-2 { display: grid; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="left">
+        <div class="logo">FFTB</div>
+        <div class="bank-name">First Federal Trust Bank <small>Member FDIC • Online Banking</small></div>
+    </div>
+    <div class="right">
+        <div class="secure">&#128274; SECURE</div>
+        <div class="user">Welcome, Keyes</div>
+        <a href="index.html">Logout</a>
+    </div>
+</div>
+
+<div class="content">
+    <div class="breadcrumb">Home / <span>Deployment Trust Account</span></div>
+    <div class="page-title">Deployment Trust Account</div>
+    <div class="page-sub">Manage your deployment compensation funds. Account is locked until tour completion.</div>
+
+    <div class="alert">
+        <div class="icon">&#9888;&#65039;</div>
+        <div class="text">
+            <strong>Account Locked – Deployment Trust Restriction Active</strong><br>
+            Per DoD Directive 1342.22, all deployment compensation funds are held in trust until the end of your deployment tour. Funds are view-only. Transactions will become available upon unlock.
+            <div class="cd" id="alertCountdown"></div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="card">
+            <div class="label">Deployment Trust Balance</div>
+            <div class="big">$3,737,628.84 <span>USD</span></div>
+            <div class="sub">Available upon unlock: <strong>Feb 25, 2027</strong></div>
+        </div>
+        <div class="card">
+            <div class="detail-row"><span class="lbl">Account Holder</span><span class="val">Keyes</span></div>
+            <div class="detail-row"><span class="lbl">Account Type</span><span class="val">Deployment Trust (Locked)</span></div>
+            <div class="detail-row"><span class="lbl">Account Number</span><span class="val">**** **** 4829</span></div>
+            <div class="detail-row"><span class="lbl">Routing Number</span><span class="val">*****0021</span></div>
+            <div class="detail-row"><span class="lbl">Branch</span><span class="val">U.S. Army – Finance Division</span></div>
+            <div class="detail-row"><span class="lbl">Status</span><span class="val" style="color:#856404;">Active – Deployed</span></div>
+        </div>
+    </div>
+
+    <div class="lock-card">
+        <div class="top">
+            <div class="status">
+                <div class="dot"></div>
+                <div class="lbl">ACCOUNT LOCKED</div>
+            </div>
+            <div class="badge">&#128274; LOCKED</div>
+        </div>
+        <div class="bar"><div class="fill"></div></div>
+        <div class="dates">
+            <span>Lock started: <strong>Oct 25, 2026</strong></span>
+            <span>Unlocks: <strong>Feb 25, 2027 23:59 UTC</strong></span>
+        </div>
+        <div class="cd-text" id="mainCountdown">Loading...</div>
+    </div>
+
+    <div class="card" style="padding:16px 18px;">
+        <div class="tx-header">
+            <h2>Transaction History</h2>
+            <div class="filters">
+                <span class="active">All</span>
+                <span>Deposits</span>
+                <span>Withdrawals</span>
+            </div>
+        </div>
+        <ul class="tx-list">
+            <li class="tx-item">
+                <div class="tx-row">
+                    <div class="tx-left">
+                        <div class="tx-desc">DoD Deployment Compensation – Initial Deposit</div>
+                        <div class="tx-ref">Ref: DOD-DEP-2026-10-20-001</div>
+                    </div>
+                    <div class="tx-right">
+                        <div class="tx-amount credit">+$3,737,628.84</div>
+                        <div class="tx-date">Oct 20, 2026</div>
+                    </div>
+                </div>
+                <div class="tx-bottom">
+                    <span class="tx-status" id="s1">Locked</span>
+                    <a href="#" class="tx-link" id="l1">View Receipt</a>
+                </div>
+            </li>
+            <li class="tx-item">
+                <div class="tx-row">
+                    <div class="tx-left">
+                        <div class="tx-desc">Combat Pay Adjustment – Retroactive</div>
+                        <div class="tx-ref">Ref: DOD-CPA-2026-10-18-003</div>
+                    </div>
+                    <div class="tx-right">
+                        <div class="tx-amount credit">+$0.00</div>
+                        <div class="tx-date">Oct 18, 2026</div>
+                    </div>
+                </div>
+                <div class="tx-bottom">
+                    <span class="tx-status" id="s2">Locked</span>
+                    <a href="#" class="tx-link" id="l2">View Adjustment</a>
+                </div>
+            </li>
+            <li class="tx-item">
+                <div class="tx-row">
+                    <div class="tx-left">
+                        <div class="tx-desc">Hazard Duty Pay – October</div>
+                        <div class="tx-ref">Ref: DOD-HDP-2026-10-15-007</div>
+                    </div>
+                    <div class="tx-right">
+                        <div class="tx-amount credit">+$0.00</div>
+                        <div class="tx-date">Oct 15, 2026</div>
+                    </div>
+                </div>
+                <div class="tx-bottom">
+                    <span class="tx-status" id="s3">Locked</span>
+                    <a href="#" class="tx-link" id="l3">View Breakdown</a>
+                </div>
+            </li>
+            <li class="tx-item">
+                <div class="tx-row">
+                    <div class="tx-left">
+                        <div class="tx-desc">Family Separation Allowance – Q4</div>
+                        <div class="tx-ref">Ref: DOD-FSA-2026-10-10-002</div>
+                    </div>
+                    <div class="tx-right">
+                        <div class="tx-amount credit">+$0.00</div>
+                        <div class="tx-date">Oct 10, 2026</div>
+                    </div>
+                </div>
+                <div class="tx-bottom">
+                    <span class="tx-status" id="s4">Locked</span>
+                    <a href="#" class="tx-link" id="l4">View Allowance</a>
+                </div>
+            </li>
+            <li class="tx-item">
+                <div class="tx-row">
+                    <div class="tx-left">
+                        <div class="tx-desc">Monthly Base Pay – October</div>
+                        <div class="tx-ref">Ref: DOD-BP-2026-10-01-012</div>
+                    </div>
+                    <div class="tx-right">
+                        <div class="tx-amount credit">+$0.00</div>
+                        <div class="tx-date">Oct 1, 2026</div>
+                    </div>
+                </div>
+                <div class="tx-bottom">
+                    <span class="tx-status" id="s5">Locked</span>
+                    <a href="#" class="tx-link" id="l5">View Pay Stub</a>
+                </div>
+            </li>
+        </ul>
+        <div class="tx-note">&#9432; Blue links become clickable when the account lock expires on <strong>Feb 25, 2027</strong>.</div>
+    </div>
+</div>
+
+<div class="bottom-nav">
+    <a href="#" class="active"><span class="nav-icon">&#8962;</span> Home</a>
+    <a href="#"><span class="nav-icon">&#128179;</span> Accounts</a>
+    <a href="#"><span class="nav-icon">&#128200;</span> Transactions</a>
+    <a href="#"><span class="nav-icon">&#128184;</span> Transfers</a>
+    <a href="#"><span class="nav-icon">&#9881;</span> Settings</a>
+</div>
+
+<div class="p-footer">
+    <div class="links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Security</a>
+        <a href="#">Contact</a>
+    </div>
+    <div class="badges">
+        <span class="badge">Member FDIC</span>
+        <span class="badge">Equal Housing Lender</span>
+        <span class="badge">&copy; 2026 First Federal Trust Bank</span>
+    </div>
+</div>
+
+<script>
+(function() {
+    var unlock = new Date('2027-02-25T23:59:59Z');
+    var mainEl = document.getElementById('mainCountdown');
+    var alertEl = document.getElementById('alertCountdown');
+    var links = document.querySelectorAll('.tx-link');
+    var statuses = document.querySelectorAll('.tx-status');
+    
+    function update() {
+        var now = new Date();
+        var diff = unlock - now;
+        if (diff <= 0) {
+            var msg = '&#9989; Account Unlocked – All transactions are now available.';
+            mainEl.innerHTML = msg;
+            alertEl.innerHTML = msg;
+            links.forEach(function(el) {
+                el.classList.add('unlocked');
+                el.style.cursor = 'pointer';
+                el.style.pointerEvents = 'auto';
+                el.style.opacity = '1';
+            });
+            statuses.forEach(function(el) {
+                el.className = 'tx-status completed';
+                el.textContent = 'Completed';
+            });
+            return;
+        }
+        var days = Math.floor(diff / 86400000);
+        var hours = Math.floor((diff % 86400000) / 3600000);
+        var minutes = Math.floor((diff % 3600000) / 60000);
+        var seconds = Math.floor((diff % 60000) / 1000);
+        var text = 'Time remaining: ' + days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
+        mainEl.textContent = text;
+        alertEl.textContent = text;
+    }
+    update();
+    setInterval(update, 1000);
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>First Federal Trust Bank – Secure Login</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background: linear-gradient(180deg, #e9ecef 0%, #dee2e6 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 12px; }
+        .login-container { max-width: 420px; width: 100%; background: #fff; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #0a1628, #1a2a4a); padding: 24px 20px 20px; text-align: center; }
+        .header .logo-wrap { width: 64px; height: 64px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; border: 2px solid #c9a84c; }
+        .header .logo-wrap span { font-size: 22px; font-weight: 800; color: #0a1628; }
+        .header h1 { color: #fff; font-size: 18px; font-weight: 700; }
+        .header h1 small { display: block; font-size: 10px; color: #c9a84c; font-weight: 400; letter-spacing: 1px; text-transform: uppercase; margin-top: 3px; }
+        .body { padding: 20px 20px 16px; }
+        .body .welcome { font-size: 13px; color: #6c757d; text-align: center; margin-bottom: 16px; }
+        .body .welcome strong { color: #1a1a2e; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 600; color: #495057; margin-bottom: 5px; }
+        .form-group input { width: 100%; padding: 14px 16px; border: 2px solid #e9ecef; border-radius: 12px; font-size: 16px; color: #1a1a2e; background: #f8f9fa; outline: none; transition: border 0.2s; -webkit-appearance: none; }
+        .form-group input:focus { border-color: #1b3a2d; background: #fff; box-shadow: 0 0 0 3px rgba(27,58,45,0.1); }
+        .form-group .hint { font-size: 11px; color: #adb5bd; margin-top: 3px; }
+        .btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #1b3a2d, #2d5a3f); color: #fff; border: none; border-radius: 12px; font-size: 17px; font-weight: 700; cursor: pointer; transition: all 0.2s; letter-spacing: 0.3px; margin-top: 6px; -webkit-tap-highlight-color: transparent; }
+        .btn:active { transform: scale(0.98); box-shadow: 0 2px 8px rgba(27,58,45,0.3); }
+        .secure-note { text-align: center; margin-top: 12px; font-size: 11px; color: #868e96; }
+        .secure-note span { color: #2b8a3e; }
+        .footer { padding: 14px 20px; background: #f8f9fa; border-top: 1px solid #e9ecef; text-align: center; }
+        .footer .links { display: flex; justify-content: center; gap: 16px; margin-bottom: 6px; }
+        .footer .links a { color: #6c757d; text-decoration: none; font-size: 11px; }
+        .footer .links a:active { color: #1b3a2d; }
+        .footer .fdic { font-size: 10px; color: #868e96; line-height: 1.4; }
+        .footer .fdic strong { color: #495057; }
+        .error { background: #fff5f5; border: 1px solid #ffc9c9; color: #c92a2a; padding: 10px 14px; border-radius: 8px; font-size: 12px; margin-bottom: 14px; display: none; }
+        @media (min-width: 600px) {
+            body { padding: 20px; }
+            .login-container { border-radius: 24px; }
+            .header { padding: 32px 28px 24px; }
+            .header .logo-wrap { width: 72px; height: 72px; }
+            .header .logo-wrap span { font-size: 26px; }
+            .header h1 { font-size: 20px; }
+            .body { padding: 24px 28px 20px; }
+            .form-group input { padding: 12px 16px; font-size: 15px; }
+            .btn { padding: 14px; font-size: 16px; }
+            .footer { padding: 16px 28px; }
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <div class="header">
+        <div class="logo-wrap"><span>FFTB</span></div>
+        <h1>First Federal Trust Bank <small>Member FDIC • Secure Online Banking</small></h1>
+    </div>
+    <div class="body">
+        <div class="welcome">Welcome to <strong>First Federal Trust Bank</strong><br>Please sign in to access your account.</div>
+        <div class="error" id="errorMsg">Invalid username or password. Please try again.</div>
+        <form id="loginForm" onsubmit="return handleLogin(event)">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter your username" autocomplete="off">
+                <div class="hint">Your DoD-issued banking ID</div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" autocomplete="off">
+                <div class="hint">Forgot password? Contact support.</div>
+            </div>
+            <button type="submit" class="btn">Sign In</button>
+            <div class="secure-note">&#128274; <span>Secured</span> with 256-bit SSL encryption</div>
+        </form>
+    </div>
+    <div class="footer">
+        <div class="links">
+            <a href="#">Forgot Password</a>
+            <a href="#">Enroll Now</a>
+            <a href="#">Security Center</a>
+        </div>
+        <div class="fdic">
+            <strong>First Federal Trust Bank</strong> • Member FDIC • Equal Housing Lender<br>
+            &copy; 2026 First Federal Trust Bank. All rights reserved.
+        </div>
+    </div>
+</div>
+<script>
+function handleLogin(e) {
+    e.preventDefault();
+    var user = document.getElementById('username').value.trim();
+    var pass = document.getElementById('password').value.trim();
+    var err = document.getElementById('errorMsg');
+    if (user === 'soldier' && pass === 'deploy123') {
+        window.location.href = 'portal.html';
+    } else {
+        err.style.display = 'block';
+    }
+}
+</script>
+</body>
+</html>
